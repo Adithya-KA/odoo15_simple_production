@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <record id="production_option_menu_item_view_tree" model="ir.ui.view">
+        <field name="name">Production Order.tree</field>
+        <field name="model">simple.production</field>
+        <field name="arch" type="xml">
+            <tree string="Production">
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="quantity"/>
+                <field name="uom"/>
+                <field name="scheduled_date"/>
+                <field name="company_id"/>
+                <field name="status"/>
+            </tree>
+        </field>
+    </record>
+    <record id="production_option_menu_item_view_form" model="ir.ui.view">
+        <field name="name">Production Order.form</field>
+        <field name="model">simple.production</field>
+        <field name="arch" type="xml">
+            <form string="Production">
+                <header>
+                        <button name="button_confirmed" class="oe_highlight" string="Confirm" type="object"
+                                help="Move PO to confirmed state"
+                                attrs="{'invisible': [('status', '!=', 'draft')]}"/>
+                        <button name="button_mark_as_done"
+                                class="oe_highlight" string="Mark as done" type="object"
+                                help="Move PO to done state"
+                                attrs="{'invisible': [('status', '!=', 'confirmed')]}"/>
+                        <button name="button_cancel"
+                                class="oe_highlight" string="Cancel" type="object"
+                                help="Remove PO or cancel PO"
+                                attrs="{'invisible': [('status', '!=', 'confirmed')]}"/>
+                        <field name="status" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <h1>
+                        <field name="name" readonly="1"/>
+                    </h1>
+
+                    <group>
+                        <group>
+                            <field name="product_id"/>
+                            <field name="quantity"/>
+                            <field name="uom"/>
+                            <field name="bill_of_material" optional="hide"/>
+                        </group>
+                        <group>
+                            <field name="scheduled_date"/>
+                            <field name="responsible_id"/>
+                            <field name="company_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                       <page string="Components">
+                            <field name="simple_product_line_ids" position="replace">
+                                <tree editable="bottom">
+                                    <field name="product_line_name_id"/>
+                                    <field name="description_id"/>
+                                    <field name="qty" invisible="1"/>
+                                    <field name="toconsume" string="Consumed"/>
+                                </tree>
+                            </field>
+                       </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+     <record id="production_option_menu_action" model="ir.actions.act_window">
+        <field name="name">Production Order</field>
+        <field name="res_model">simple.production</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+<!--    filters and group by-->
+    <record id="simple_production_view_search" model="ir.ui.view">
+            <field name="name">simple.production.search</field>
+            <field name="model">simple.production</field>
+            <field name="arch" type="xml">
+               <search string="Simple Production">
+                <field name="product_id"/>
+                <field name="bill_of_material"/>
+                <field name="scheduled_date"/>
+                <field name="company_id"/>
+                <field name="status"/>
+                 <filter string="Bill_of_material" name="bill_of_material" context="{'group_by': 'bill_of_material'}"/>
+                 <filter string="Status" name="status" context="{'group_by': 'status'}"/>
+             </search>
+            </field>
+        </record>
+    <!--        menu item-->
+    <menuitem id="production_menu" name="Simple Production" sequence="1"/>
+    <menuitem id="production_menu_action" name="Production Order" parent="production_menu"
+              sequence="1"/>
+    <menuitem id="production_option_menu" name="Production" parent="production_menu_action"
+              action="production_option_menu_action"
+              sequence="1"/>
+</odoo>

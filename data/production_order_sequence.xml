@@ -1,0 +1,8 @@
+<data>
+    <record id="production_order_seq" model="ir.sequence">
+       <field name="name">production order Sequence</field>
+       <field name="code">simple.production</field>
+       <field name="prefix">SMO</field>
+       <field name="padding">5</field>
+   </record>
+</data>
